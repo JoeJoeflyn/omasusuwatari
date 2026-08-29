@@ -2,7 +2,7 @@
 
 > **Animated *Spirited Away* Soot Sprites for Omarchy & Wayland / Hyprland**
 
-A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an animated Waybar toggle widget and mischievous soot sprites that walk along your active window frames and occasionally sneak down to pull off a solo mouse cursor heist!
+A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an animated Waybar toggle widget and mischievous soot sprites that live directly on your active window frames and occasionally sneak down to pull off a solo mouse cursor heist!
 
 ![Susuwatari Preview](preview.png)
 
@@ -29,7 +29,7 @@ A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an 
 ### One-Step Install (Omarchy Plugin Manager):
 
 ```sh
-omarchy plugin add https://github.com/giogio/omasusuwatari.git --enable
+omarchy plugin add https://github.com/JoeJoeflyn/omasusuwatari.git --enable
 ```
 
 > **Note**: The plugin automatically detects and configures the companion binary on first launch. No manual setup required!
@@ -37,7 +37,7 @@ omarchy plugin add https://github.com/giogio/omasusuwatari.git --enable
 ### Manual Installation (From Source):
 
 ```sh
-git clone https://github.com/giogio/omasusuwatari.git ~/.config/omarchy/plugins/omasusuwatari
+git clone https://github.com/JoeJoeflyn/omasusuwatari.git ~/.config/omarchy/plugins/omasusuwatari
 cd ~/.config/omarchy/plugins/omasusuwatari
 ./setup.sh
 ```
@@ -62,7 +62,7 @@ To move the Waybar widget to a different section or slot:
 
 ```sh
 # Move to right section
-omarchy bar move io.github.giogio.omasusuwatari --section right
+omarchy bar move io.github.joejoeflyn.omasusuwatari --section right
 
 # Or edit ~/.config/omarchy/shell.json directly under "bar.layout"
 ```
@@ -85,12 +85,12 @@ omarchy bar move io.github.giogio.omasusuwatari --section right
 ## 🗑️ Uninstallation
 
 ```sh
-omarchy plugin remove io.github.giogio.omasusuwatari --yes
+omarchy plugin remove io.github.joejoeflyn.omasusuwatari --yes
 ```
 
 ---
 
 ## 📄 License
 
-MIT © [giogio](https://github.com/giogio)
+MIT © [JoeJoeflyn](https://github.com/JoeJoeflyn)
 Inspired by Studio Ghibli's *Spirited Away* (千と千尋の神隠し).
