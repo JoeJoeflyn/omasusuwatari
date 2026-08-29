@@ -5,8 +5,9 @@
 A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an animated Waybar toggle widget and mischievous soot sprites that live directly on your active window frames and occasionally sneak down to pull off a solo mouse cursor heist!
 
 ![Susuwatari Preview](preview.png)
+<img width="960" height="540" alt="screenrecording-2026-08-29_20-23-36" src="https://github.com/user-attachments/assets/858e2963-bb60-43eb-9a80-2bb4646a47f5" />
 
-> *"I really love the Susuwatari in the movie 'Spirited Away', and I had this idea: why not have them as little desktop pets on our machine and bring their cute, playful behavior to life just for fun and chill?"* — **JoeJoeflyn**
+> *"I really love the Susuwatari in the movie 'Spirited Away', and I had this idea: why not have them as little desktop pets on our machine and bring their cute, playful behavior to life just for fun and chill?"*
 
 ---
 
