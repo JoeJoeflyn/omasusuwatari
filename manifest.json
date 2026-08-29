@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "omasusuwatari",
+  "name": "Susuwatari",
+  "version": "1.0.0",
+  "author": "giogio",
+  "license": "MIT",
+  "description": "Animated Spirited Away Susuwatari soot sprite pets with bar toggle.",
+  "repository": "https://github.com/giogio/omasusuwatari",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Susuwatari",
+    "description": "Spirited Away Susuwatari desktop pets & animated bar toggle.",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

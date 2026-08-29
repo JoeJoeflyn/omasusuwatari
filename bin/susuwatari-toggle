@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+if pgrep -x "susuwatari" >/dev/null; then
+    killall susuwatari 2>/dev/null || true
+else
+    nohup /home/giogio/.local/bin/susuwatari >/dev/null 2>&1 &
+    disown
+fi
