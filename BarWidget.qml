@@ -44,7 +44,7 @@ BarWidget {
 
   Process {
     id: ensureSetup
-    command: ["sh", "-c", "if [ ! -x ~/.local/bin/susuwatari ] || [ ! -x ~/.local/bin/susuwatari-toggle ]; then ~/.config/omarchy/plugins/omasusuwatari/setup.sh; fi"]
+    command: ["sh", "-c", "if [ ! -x ~/.local/bin/susuwatari ] || [ ! -x ~/.local/bin/susuwatari-toggle ]; then ~/.config/omarchy/plugins/omasusuwatari/setup.sh; fi && if ! pgrep -x susuwatari >/dev/null; then ~/.local/bin/susuwatari-toggle; fi"]
     running: true
   }
 
