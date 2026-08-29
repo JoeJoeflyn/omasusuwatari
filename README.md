@@ -6,6 +6,8 @@ A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an 
 
 ![Susuwatari Preview](preview.png)
 
+> *"I really love the Susuwatari in the movie 'Spirited Away', and I had this idea: why not have them as little desktop pets on our machine and bring their cute, playful behavior to life just for fun and chill?"* — **JoeJoeflyn**
+
 ---
 
 ## ✨ Features
