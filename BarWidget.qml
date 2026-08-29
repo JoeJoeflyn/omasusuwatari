@@ -43,6 +43,12 @@ BarWidget {
   }
 
   Process {
+    id: ensureSetup
+    command: ["sh", "-c", "if [ ! -x ~/.local/bin/susuwatari ] || [ ! -x ~/.local/bin/susuwatari-toggle ]; then ~/.config/omarchy/plugins/omasusuwatari/setup.sh; fi"]
+    running: true
+  }
+
+  Process {
     id: statsProc
     command: ["omarchy-system-stats"]
     running: false
