@@ -6,7 +6,7 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "io.github.antigravity.omasusuwatari"
+  moduleName: "io.github.giogio.omasusuwatari"
 
   property int cpuPercent: 0
   property int frameIndex: 0
