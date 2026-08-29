@@ -43,8 +43,8 @@ BarWidget {
   }
 
   Process {
-    id: ensureSetup
-    command: ["sh", "-c", "if [ ! -x ~/.local/bin/susuwatari ] || [ ! -x ~/.local/bin/susuwatari-toggle ]; then ~/.config/omarchy/plugins/omasusuwatari/setup.sh; fi && if ! pgrep -x susuwatari >/dev/null; then ~/.local/bin/susuwatari-toggle; fi"]
+    id: ensureBuild
+    command: ["sh", "-c", "if [ ! -x ~/.config/omarchy/plugins/omasusuwatari/bin/susuwatari ]; then make -C ~/.config/omarchy/plugins/omasusuwatari; fi"]
     running: true
   }
 
@@ -269,7 +269,7 @@ BarWidget {
     onPressed: function() {
       clickBounce.start()
       if (root.bar) {
-        root.bar.run("susuwatari-toggle")
+        root.bar.run("sh", ["-c", "cd ~/.config/omarchy/plugins/omasusuwatari && ./bin/susuwatari-toggle"])
       }
       checkTimer.restart()
     }

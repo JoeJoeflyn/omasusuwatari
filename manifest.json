@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "omasusuwatari",
+  "id": "io.github.joejoeflyn.omasusuwatari",
   "name": "Susuwatari",
   "version": "1.0.0",
   "author": "JoeJoeflyn",
   "license": "MIT",
-  "description": "Animated Spirited Away Susuwatari soot sprite pets with bar toggle.",
+  "description": "Spirited Away Susuwatari soot sprite desktop pets that live on your window frame with playful idle cursor interactions.",
   "repository": "https://github.com/JoeJoeflyn/omasusuwatari",
   "kinds": [
     "bar-widget"

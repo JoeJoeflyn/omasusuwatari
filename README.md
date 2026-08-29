@@ -14,14 +14,14 @@ A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an 
 ## ✨ Features
 
 - 🏮 **Active Window Frame Pets**: Soot sprites balance and scurry (`トコトコ`) directly along the top frame of your focused application window.
-- 🖱️ **Solo Mouse Heist**: When your mouse is left still for >2.5 seconds, a single solitary soot sprite sneaks down from the window, lifts your cursor with raised hands, and drags it across your screen before letting go with a sparkle (`✨`)!
+- 🖱️ **Solo Mouse Heist**: When your mouse is left untouched (>7s), a solitary soot sprite occasionally sneaks down from the window, playfully lifts your cursor with raised hands, and drags it across your screen before letting go with a sparkle (`✨`)!
 - 💨 **Hover Startle & Scatter**: Move your mouse close to any sprite on the window bar to see them jump (`ぴょん！`) with wide shock eyes (`O O`) and scamper away.
 - 💨 **Fast-Swipe Poof**: Swiping your cursor rapidly through a soot sprite temporarily poofs it into a cloud of soot particles, which quickly reforms.
 - 👥 **Social Bumping**: When two sprites walk into each other on the window frame, they softly bump and bounce apart with curious glances.
 - 🪨 **Boiler Room Coal**: True to Kamaji's boiler room in *Spirited Away*, some sprites carry tiny lumps of coal (`炭`).
 - ⚡ **Ultra-Lightweight & Efficient**:
   - **Memory**: Only **~500 KB private RAM** (pure native Wayland C client, no GTK or GNOME runtime bloat).
-  - **Binary**: Just **46 KB**.
+  - **Binary**: Just **46 KB** (compiled from source).
   - **CPU**: **<0.2%** at 50 FPS.
 - 🎛️ **Waybar Widget Controller**: An animated soot sprite on your Waybar that patters faster under CPU load and toggles the desktop window pets ON/OFF with a single click.
 
@@ -34,8 +34,6 @@ A delightful, ultra-lightweight desktop pet plugin for **Omarchy**. Features an 
 ```sh
 omarchy plugin add https://github.com/JoeJoeflyn/omasusuwatari.git --enable
 ```
-
-> **Note**: The plugin automatically detects and configures the companion binary on first launch. No manual setup required!
 
 ### Manual Installation (From Source):
 
@@ -54,7 +52,7 @@ cd ~/.config/omarchy/plugins/omasusuwatari
 | **Click Waybar Icon** | Toggles desktop window pets **ON / OFF** (with a happy jump). |
 | **Hover on Window Bar** | Startles the soot sprites into a rapid scatter. |
 | **Swipe Fast across Sprite** | Startles sprite into a harmless cloud of soot dust (`poof!`). |
-| **Leave Mouse Still (~2.5s)** | Triggers the solo mouse heist! |
+| **Leave Mouse Still (~7s)** | Occasionally triggers the solo mouse heist! |
 | **Move Mouse during Heist** | Startles the sprite, making it drop your cursor and scurry home. |
 
 ---
@@ -76,6 +74,7 @@ omarchy bar move io.github.joejoeflyn.omasusuwatari --section right
 
 - **Bar Widget**: Native Qt6 / QML component running inside `quickshell`.
 - **Desktop Window Overlay**: Pure C standalone Wayland Layer-Shell client (`libwayland-client` + `libcairo` + POSIX Shared Memory) connecting to Hyprland's IPC socket for active window tracking and cursor interactions.
+- **Self-Contained**: Builds locally from `src/main.c` directly into the plugin directory with zero global system modification.
 
 ### Build Dependencies (for building from source):
 - `gcc` / `clang`

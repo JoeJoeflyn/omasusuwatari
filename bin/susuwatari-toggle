@@ -1,7 +1,35 @@
 #!/usr/bin/env bash
-if pgrep -x "susuwatari" >/dev/null; then
-    killall susuwatari 2>/dev/null || true
-else
-    nohup /home/giogio/.local/bin/susuwatari >/dev/null 2>&1 &
-    disown
+set -e
+
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BIN_PATH="${PLUGIN_DIR}/bin/susuwatari"
+PID_FILE="${XDG_RUNTIME_DIR:-/tmp}/omasusuwatari-${UID}.pid"
+
+# Ensure binary is built
+if [ ! -x "${BIN_PATH}" ]; then
+    make -C "${PLUGIN_DIR}"
 fi
+
+# Check if process is currently active via PID file
+if [ -f "${PID_FILE}" ]; then
+    PID="$(cat "${PID_FILE}" 2>/dev/null || true)"
+    if [ -n "${PID}" ] && kill -0 "${PID}" 2>/dev/null; then
+        kill "${PID}" 2>/dev/null || true
+        rm -f "${PID_FILE}"
+        exit 0
+    fi
+    rm -f "${PID_FILE}"
+fi
+
+# Fallback check for process instance
+if pgrep -u "${UID}" -x "susuwatari" >/dev/null; then
+    pkill -u "${UID}" -x "susuwatari" 2>/dev/null || true
+    rm -f "${PID_FILE}"
+    exit 0
+fi
+
+# Start process in background
+nohup "${BIN_PATH}" >/dev/null 2>&1 &
+NEW_PID=$!
+echo "${NEW_PID}" > "${PID_FILE}"
+disown

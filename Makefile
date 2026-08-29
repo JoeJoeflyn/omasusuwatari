@@ -10,19 +10,14 @@ TARGET := $(BIN_DIR)/susuwatari
 
 SRCS := $(SRC_DIR)/main.c $(SRC_DIR)/wlr-layer-shell-unstable-v1-protocol.c $(SRC_DIR)/xdg-shell-protocol.c
 
-.PHONY: all clean install
+.PHONY: all clean
 
 all: $(TARGET)
 
 $(TARGET): $(SRCS)
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $(SRCS) $(WAYLAND_FLAGS) -o $(TARGET)
-
-install: all
-	@mkdir -p $(HOME)/.local/bin
-	cp -f $(BIN_DIR)/susuwatari $(HOME)/.local/bin/susuwatari
-	cp -f $(BIN_DIR)/susuwatari-toggle $(HOME)/.local/bin/susuwatari-toggle
-	chmod +x $(HOME)/.local/bin/susuwatari $(HOME)/.local/bin/susuwatari-toggle
+	@chmod +x $(TARGET)
 
 clean:
 	rm -f $(TARGET)
