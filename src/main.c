@@ -105,6 +105,7 @@ struct App {
     int sprite_count;
     double start_time;
     double last_frame_time;
+    double global_heist_cooldown;
 };
 
 static double get_time_sec(void) {
@@ -321,6 +322,7 @@ static void add_particle(Sprite *s, double x, double y, int ptype) {
 
 static void init_sprites(struct App *app) {
     app->sprite_count = 5;
+    app->global_heist_cooldown = rand_f(45.0, 90.0);
     for (int i = 0; i < app->sprite_count; i++) {
         Sprite *s = &app->sprites[i];
         s->id = i + 1;
@@ -337,7 +339,7 @@ static void init_sprites(struct App *app) {
         }
         s->state = STATE_WINDOW;
         s->state_timer = rand_f(1.5, 4.0);
-        s->prank_cooldown = rand_f(6.0, 16.0);
+        s->prank_cooldown = rand_f(60.0, 150.0);
         s->has_coal = (i % 2 == 0);
         s->num_particles = 0;
     }
@@ -353,7 +355,7 @@ static void trigger_startle(Sprite *s, double cx) {
     s->vx = dir * 120.0;
     s->target_x = s->x + dir * 80.0;
     s->speed = 120.0;
-    s->prank_cooldown = 12.0;
+    s->prank_cooldown = 45.0;
 }
 
 static void trigger_poof(Sprite *s) {
@@ -377,6 +379,8 @@ static void update_physics(struct App *app, double dt) {
     double wy = app->has_win ? app->win_y : 30.0;
     double ww = app->has_win ? app->win_w : (app->width - 200.0);
     pthread_mutex_unlock(&app->hypr_lock);
+
+    app->global_heist_cooldown -= dt;
 
     // EXACTLY ONE SUSUWATARI HEIST: Check if any sprite is already on a mission
     int heist_in_progress = 0;
@@ -432,21 +436,28 @@ static void update_physics(struct App *app, double dt) {
             continue;
         }
 
-        // Mouse Heist: STRICTLY ONE SOLO OPERATIVE AT A TIME
-        if (!heist_in_progress && s->state == STATE_WINDOW && has_cur && cur_idle > 2.5 && s->prank_cooldown <= 0.0 && s->startle_timer <= 0.0) {
-            s->state = STATE_SNEAK;
-            s->target_x = cx;
-            s->target_y = cy + 12.0;
-            s->speed = 95.0;
-            s->last_cur_x = cx;
-            s->last_cur_y = cy;
-            heist_in_progress = 1; // Claim lock so no one else joins!
+        // Mouse Heist: STRICTLY ONE SOLO OPERATIVE AT A TIME & RARE OCCURRENCE
+        if (app->global_heist_cooldown <= 0.0 && !heist_in_progress && s->state == STATE_WINDOW && has_cur && cur_idle > 7.0 && s->prank_cooldown <= 0.0 && s->startle_timer <= 0.0) {
+            if (rand_f(0.0, 1.0) < 0.30) {
+                s->state = STATE_SNEAK;
+                s->target_x = cx;
+                s->target_y = cy + 12.0;
+                s->speed = 95.0;
+                s->last_cur_x = cx;
+                s->last_cur_y = cy;
+                heist_in_progress = 1; // Claim lock so no one else joins!
+                app->global_heist_cooldown = rand_f(90.0, 240.0); // 1.5 to 4 minutes between heists
+                s->prank_cooldown = rand_f(120.0, 300.0);
+            } else {
+                s->prank_cooldown = rand_f(30.0, 60.0);
+            }
         }
 
         if (s->state == STATE_SNEAK) {
             if (!has_cur || cur_idle < 0.15) {
                 s->state = STATE_RETURN;
-                s->prank_cooldown = 10.0;
+                s->prank_cooldown = rand_f(60.0, 120.0);
+                app->global_heist_cooldown = rand_f(60.0, 120.0);
             } else {
                 s->target_x = cx;
                 s->target_y = cy + 12.0;
@@ -476,7 +487,8 @@ static void update_physics(struct App *app, double dt) {
             if (!has_cur || hypot(cx - s->last_cur_x, cy - s->last_cur_y) > 35.0 || s->drag_timer <= 0.0) {
                 add_particle(s, s->x, s->y - 8.0, 2);
                 s->state = STATE_RETURN;
-                s->prank_cooldown = 12.0;
+                s->prank_cooldown = rand_f(90.0, 180.0);
+                app->global_heist_cooldown = rand_f(75.0, 180.0);
             } else {
                 s->drag_timer -= dt;
                 double dx = s->target_x - s->x;
@@ -498,7 +510,8 @@ static void update_physics(struct App *app, double dt) {
                 } else {
                     add_particle(s, s->x, s->y - 8.0, 2);
                     s->state = STATE_RETURN;
-                    s->prank_cooldown = 12.0;
+                    s->prank_cooldown = rand_f(90.0, 180.0);
+                    app->global_heist_cooldown = rand_f(75.0, 180.0);
                 }
             }
         } else if (s->state == STATE_RETURN) {
