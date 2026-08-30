@@ -96,6 +96,8 @@ BarWidget {
     }
   }
 
+  readonly property string customTitle: String(setting("title", setting("tooltip", "")))
+
   SequentialAnimation {
     id: clickBounce
     NumberAnimation { target: root; property: "jumpOffset"; to: -6; duration: 90; easing.type: Easing.OutQuad }
@@ -107,7 +109,7 @@ BarWidget {
     anchors.fill: parent
     bar: root.bar
     slotSize: Style.bar.iconSlot
-    tooltipText: root.isRunning ? ("Susuwatari: Active • CPU " + root.cpuPercent + "% (Click to Sleep)") : "Susuwatari: Sleeping (Click to Wake)"
+    tooltipText: root.customTitle !== "" ? root.customTitle : (root.isRunning ? ("Susuwatari: Active (Click to Sleep)") : "Susuwatari: Sleeping (Click to Wake)")
 
     iconComponent: Component {
       Item {
@@ -265,6 +267,8 @@ BarWidget {
         MouseArea {
           anchors.fill: parent
           hoverEnabled: true
+          acceptedButtons: Qt.NoButton
+          propagateComposedEvents: true
           onEntered: { root.isHovered = true }
           onExited: { root.isHovered = false; root.mouseRelX = 0; root.mouseRelY = 0 }
           onPositionChanged: function(mouse) {
