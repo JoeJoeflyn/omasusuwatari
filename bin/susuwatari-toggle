@@ -29,7 +29,7 @@ if pgrep -u "${UID}" -x "susuwatari" >/dev/null; then
 fi
 
 # Start process in background
-nohup "${BIN_PATH}" >/dev/null 2>&1 &
+setsid nohup "${BIN_PATH}" >/dev/null 2>&1 &
 NEW_PID=$!
 echo "${NEW_PID}" > "${PID_FILE}"
 disown
