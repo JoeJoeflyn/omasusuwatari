@@ -326,16 +326,16 @@ static void init_sprites(struct App *app) {
     for (int i = 0; i < app->sprite_count; i++) {
         Sprite *s = &app->sprites[i];
         s->id = i + 1;
-        s->x = 200.0 + i * 160.0;
-        s->y = 38.0;
+        s->x = 200.0 + i * 140.0;
+        s->y = 26.0;
         s->target_x = s->x;
         s->target_y = s->y;
-        s->speed = rand_f(42.0, 72.0);
-        s->base_radius = rand_f(8.5, 11.0);
-        s->num_spikes = 36;
+        s->speed = rand_f(38.0, 68.0);
+        s->base_radius = rand_f(5.5, 6.8);
+        s->num_spikes = 32;
         for (int k = 0; k < s->num_spikes; k++) {
             s->spike_phases[k] = rand_f(0, M_PI * 2.0);
-            s->spike_lengths[k] = rand_f(2.5, 5.5);
+            s->spike_lengths[k] = rand_f(1.8, 4.0);
         }
         s->state = STATE_WINDOW;
         s->state_timer = rand_f(1.5, 4.0);
@@ -580,11 +580,11 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
             cairo_save(cr);
             if (pt->ptype == 2) { // Sparkle
                 cairo_set_source_rgba(cr, 1.0, 0.92, 0.45, pt->alpha);
-                cairo_arc(cr, pt->x, pt->y, pt->size * 1.5, 0, M_PI * 2.0);
+                cairo_arc(cr, pt->x, pt->y, pt->size, 0, M_PI * 2.0);
                 cairo_fill(cr);
             } else {
                 cairo_set_source_rgba(cr, 0.08, 0.08, 0.11, pt->alpha);
-                cairo_arc(cr, pt->x, pt->y, pt->size * 1.5, 0, M_PI * 2.0);
+                cairo_arc(cr, pt->x, pt->y, pt->size, 0, M_PI * 2.0);
                 cairo_fill(cr);
             }
             cairo_restore(cr);
@@ -598,14 +598,14 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
         // Draw stick legs
         cairo_save(cr);
         cairo_set_source_rgba(cr, 0.04, 0.04, 0.06, 0.95);
-        cairo_set_line_width(cr, 1.6);
+        cairo_set_line_width(cr, 1.2);
         cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-        double step = sin(s->scurry_phase) * 2.5;
+        double step = sin(s->scurry_phase) * 1.8;
 
-        cairo_move_to(cr, s->x - 5.0, s->y + s->hop_offset + 5.0);
-        cairo_line_to(cr, s->x - 7.5, s->y + s->hop_offset + 10.5 + step);
-        cairo_move_to(cr, s->x + 5.0, s->y + s->hop_offset + 5.0);
-        cairo_line_to(cr, s->x + 7.5, s->y + s->hop_offset + 10.5 - step);
+        cairo_move_to(cr, s->x - 3.5, s->y + s->hop_offset + 3.5);
+        cairo_line_to(cr, s->x - 5.5, s->y + s->hop_offset + 7.5 + step);
+        cairo_move_to(cr, s->x + 3.5, s->y + s->hop_offset + 3.5);
+        cairo_line_to(cr, s->x + 5.5, s->y + s->hop_offset + 7.5 - step);
         cairo_stroke(cr);
         cairo_restore(cr);
 
@@ -613,8 +613,8 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
         cairo_translate(cr, s->x, s->y + s->hop_offset);
 
         // Charcoal outer glow
-        cairo_set_source_rgba(cr, 0.9, 0.9, 1.0, 0.28);
-        cairo_arc(cr, 0, 0, s->base_radius + 2.5, 0, M_PI * 2.0);
+        cairo_set_source_rgba(cr, 0.9, 0.9, 1.0, 0.26);
+        cairo_arc(cr, 0, 0, s->base_radius + 2.0, 0, M_PI * 2.0);
         cairo_fill(cr);
 
         // Organic radiating soot fuzz
@@ -622,7 +622,7 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
         cairo_new_path(cr);
         for (int k = 0; k < s->num_spikes; k++) {
             double angle = (k / (double)s->num_spikes) * 2.0 * M_PI;
-            double jitter = sin(cur_time * 16.0 + s->spike_phases[k]) * 0.9;
+            double jitter = sin(cur_time * 16.0 + s->spike_phases[k]) * 0.7;
             double r = s->base_radius + s->spike_lengths[k] + jitter;
             double px = cos(angle) * r;
             double py = sin(angle) * r;
@@ -640,23 +640,23 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
         // Carrying Hands or Coal
         if (is_dragging || is_startled) {
             cairo_set_source_rgba(cr, 0.04, 0.04, 0.06, 0.98);
-            cairo_set_line_width(cr, 1.6);
+            cairo_set_line_width(cr, 1.3);
             cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-            cairo_move_to(cr, -4.0, -1.0);
-            cairo_line_to(cr, -7.5, -s->base_radius - 6.0);
-            cairo_move_to(cr, 4.0, -1.0);
-            cairo_line_to(cr, 7.5, -s->base_radius - 6.0);
+            cairo_move_to(cr, -3.0, -1.0);
+            cairo_line_to(cr, -5.5, -s->base_radius - 5.0);
+            cairo_move_to(cr, 3.0, -1.0);
+            cairo_line_to(cr, 5.5, -s->base_radius - 5.0);
             cairo_stroke(cr);
         } else if (s->has_coal) {
-            cairo_set_source_rgba(cr, 0.25, 0.25, 0.32, 1.0);
-            cairo_rectangle(cr, -3.5, -s->base_radius - 4.5, 7.0, 4.5);
+            cairo_set_source_rgba(cr, 0.22, 0.22, 0.28, 1.0);
+            cairo_rectangle(cr, -2.5, -s->base_radius - 3.5, 5.0, 3.5);
             cairo_fill(cr);
         }
 
         // Eyes
-        double eye_dist = 4.2;
-        double eye_y = -2.2;
-        double eye_r = is_startled ? 4.2 : 3.6;
+        double eye_dist = 2.8;
+        double eye_y = -1.8;
+        double eye_r = is_startled ? 3.1 : 2.7;
 
         // White Sclera
         cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
@@ -666,9 +666,9 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
         cairo_fill(cr);
 
         // Pupils
-        double pupil_r = is_startled ? 1.3 : 1.8;
-        double px_off = s->look_dx * 1.3;
-        double py_off = s->look_dy * 0.9;
+        double pupil_r = is_startled ? 0.9 : 1.35;
+        double px_off = s->look_dx * 1.0;
+        double py_off = s->look_dy * 0.8;
 
         cairo_set_source_rgba(cr, 0.03, 0.03, 0.05, 1.0);
         cairo_arc(cr, -eye_dist + px_off, eye_y + py_off, pupil_r, 0, M_PI * 2.0);
@@ -678,9 +678,9 @@ static void render_cairo(struct App *app, cairo_t *cr, double cur_time) {
 
         // Specular Sparkle Highlight
         cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 0.98);
-        cairo_arc(cr, -eye_dist + px_off - 0.8, eye_y + py_off - 0.8, 0.75, 0, M_PI * 2.0);
+        cairo_arc(cr, -eye_dist + px_off - 0.5, eye_y + py_off - 0.5, 0.5, 0, M_PI * 2.0);
         cairo_fill(cr);
-        cairo_arc(cr, eye_dist + px_off - 0.8, eye_y + py_off - 0.8, 0.75, 0, M_PI * 2.0);
+        cairo_arc(cr, eye_dist + px_off - 0.5, eye_y + py_off - 0.5, 0.5, 0, M_PI * 2.0);
         cairo_fill(cr);
 
         cairo_restore(cr);
