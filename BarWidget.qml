@@ -49,6 +49,15 @@ BarWidget {
   }
 
   Process {
+    id: toggleProc
+    command: ["sh", "-c", "cd ~/.config/omarchy/plugins/omasusuwatari && ./bin/susuwatari-toggle"]
+    running: false
+    onExited: function() {
+      root.refresh()
+    }
+  }
+
+  Process {
     id: statsProc
     command: ["omarchy-system-stats"]
     running: false
@@ -268,8 +277,8 @@ BarWidget {
 
     onPressed: function() {
       clickBounce.start()
-      if (root.bar) {
-        root.bar.run("sh", ["-c", "cd ~/.config/omarchy/plugins/omasusuwatari && ./bin/susuwatari-toggle"])
+      if (!toggleProc.running) {
+        toggleProc.running = true
       }
       checkTimer.restart()
     }
