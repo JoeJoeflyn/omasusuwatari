@@ -12,7 +12,7 @@ BarWidget {
   property int frameIndex: 0
   property real jumpOffset: 0.0
   property bool isRunning: false
-  property bool isHovered: false
+  readonly property bool isHovered: button ? button.tooltipHovered : false
   property real mouseRelX: 0.0
   property real mouseRelY: 0.0
 
@@ -261,19 +261,6 @@ BarWidget {
             }
 
             ctx.restore()
-          }
-        }
-
-        MouseArea {
-          anchors.fill: parent
-          hoverEnabled: true
-          acceptedButtons: Qt.NoButton
-          propagateComposedEvents: true
-          onEntered: { root.isHovered = true }
-          onExited: { root.isHovered = false; root.mouseRelX = 0; root.mouseRelY = 0 }
-          onPositionChanged: function(mouse) {
-            root.mouseRelX = Math.max(-1.0, Math.min(1.0, (mouse.x - width * 0.5) / (width * 0.5)))
-            root.mouseRelY = Math.max(-1.0, Math.min(1.0, (mouse.y - height * 0.5) / (height * 0.5)))
           }
         }
       }
