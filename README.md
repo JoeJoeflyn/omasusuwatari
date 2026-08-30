@@ -63,7 +63,7 @@ To move the Waybar widget to a different section or slot:
 
 ```sh
 # Move to right section
-omarchy bar move io.github.joejoeflyn.omasusuwatari --section right
+omarchy bar move omasusuwatari --section right
 
 # Or edit ~/.config/omarchy/shell.json directly under "bar.layout"
 ```
@@ -87,7 +87,7 @@ omarchy bar move io.github.joejoeflyn.omasusuwatari --section right
 ## 🗑️ Uninstallation
 
 ```sh
-omarchy plugin remove io.github.joejoeflyn.omasusuwatari --yes
+omarchy plugin remove omasusuwatari --yes
 ```
 
 ---

@@ -6,7 +6,7 @@ import qs.Ui
 
 BarWidget {
   id: root
-  moduleName: "io.github.joejoeflyn.omasusuwatari"
+  moduleName: "omasusuwatari"
 
   property int cpuPercent: 0
   property int frameIndex: 0
@@ -38,7 +38,7 @@ BarWidget {
   }
 
   IpcHandler {
-    target: "io.github.joejoeflyn.omasusuwatari"
+    target: "omasusuwatari"
     function refresh(): void { root.broadcast("refresh") }
   }
 
