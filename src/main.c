@@ -346,16 +346,22 @@ static void init_sprites(struct App *app) {
 }
 
 static void trigger_startle(Sprite *s, double cx) {
-    if (s->startle_timer > 0.0 || s->state == STATE_POOF) return;
-    s->startle_timer = 0.9;
-    s->hop_offset = -6.0;
+    if (s->state == STATE_POOF) return;
+    s->startle_timer = 1.2;
+    s->hop_offset = -9.0;
     add_particle(s, s->x, s->y - 6.0, 2);
 
-    double dir = (s->x < cx) ? -1.0 : 1.0;
-    s->vx = dir * 120.0;
-    s->target_x = s->x + dir * 80.0;
-    s->speed = 120.0;
-    s->prank_cooldown = 45.0;
+    if (s->state == STATE_SNEAK || s->state == STATE_DRAG) {
+        s->state = STATE_RETURN;
+        s->speed = rand_f(180.0, 220.0);
+        s->prank_cooldown = rand_f(90.0, 180.0);
+    } else {
+        double dir = (s->x < cx) ? -1.0 : 1.0;
+        s->vx = dir * 140.0;
+        s->target_x = s->x + dir * 90.0;
+        s->speed = 140.0;
+        s->prank_cooldown = 45.0;
+    }
 }
 
 static void trigger_poof(Sprite *s) {
@@ -398,7 +404,7 @@ static void update_physics(struct App *app, double dt) {
 
         if (s->startle_timer > 0.0) {
             s->startle_timer -= dt;
-            s->hop_offset = fmin(0.0, s->hop_offset + 20.0 * dt);
+            s->hop_offset = fmin(0.0, s->hop_offset + 25.0 * dt);
         } else {
             s->hop_offset = 0.0;
         }
@@ -416,12 +422,17 @@ static void update_physics(struct App *app, double dt) {
             }
         }
 
-        // Fast swipe poof
+        // Proximity / fast swipe startle
         if (has_cur) {
             double d = hypot(cx - s->x, cy - s->y);
-            if (cur_spd > 650.0 && d < 20.0) {
+            if (cur_spd > 650.0 && d < 22.0) {
                 trigger_poof(s);
-            } else if (d < 24.0 && s->state == STATE_WINDOW) {
+            } else if (s->state == STATE_SNEAK || s->state == STATE_DRAG) {
+                // If cursor moves near or user jerks the mouse while stealing -> startle & run back fast!
+                if (cur_idle < 0.20 || cur_spd > 15.0 || d < 48.0) {
+                    trigger_startle(s, cx);
+                }
+            } else if (d < 26.0 && s->state == STATE_WINDOW) {
                 trigger_startle(s, cx);
             }
         }
@@ -454,9 +465,10 @@ static void update_physics(struct App *app, double dt) {
         }
 
         if (s->state == STATE_SNEAK) {
-            if (!has_cur || cur_idle < 0.15) {
+            if (!has_cur || cur_idle < 0.20) {
+                trigger_startle(s, cx);
                 s->state = STATE_RETURN;
-                s->prank_cooldown = rand_f(60.0, 120.0);
+                s->prank_cooldown = rand_f(75.0, 150.0);
                 app->global_heist_cooldown = rand_f(60.0, 120.0);
             } else {
                 s->target_x = cx;
@@ -484,8 +496,8 @@ static void update_physics(struct App *app, double dt) {
                 }
             }
         } else if (s->state == STATE_DRAG) {
-            if (!has_cur || hypot(cx - s->last_cur_x, cy - s->last_cur_y) > 35.0 || s->drag_timer <= 0.0) {
-                add_particle(s, s->x, s->y - 8.0, 2);
+            if (!has_cur || hypot(cx - s->last_cur_x, cy - s->last_cur_y) > 18.0 || cur_spd > 20.0 || s->drag_timer <= 0.0) {
+                trigger_startle(s, cx);
                 s->state = STATE_RETURN;
                 s->prank_cooldown = rand_f(90.0, 180.0);
                 app->global_heist_cooldown = rand_f(75.0, 180.0);
@@ -521,15 +533,25 @@ static void update_physics(struct App *app, double dt) {
             double dy = s->target_y - s->y;
             double dist = hypot(dx, dy);
 
+            // Fast panicked sprint back to safe window perch
+            double return_spd = (s->startle_timer > 0.0) ? 195.0 : 145.0;
+
             if (dist < 8.0) {
                 s->state = STATE_WINDOW;
                 s->speed = rand_f(38.0, 68.0);
             } else {
-                s->vx = (dx / dist) * 75.0;
-                s->vy = (dy / dist) * 75.0;
+                s->vx = (dx / dist) * return_spd;
+                s->vy = (dy / dist) * return_spd;
                 s->x += s->vx * dt;
                 s->y += s->vy * dt;
-                s->scurry_phase += dt * 25.0;
+                s->scurry_phase += dt * 38.0; // Fast leg scamper!
+                s->look_dx = (dx > 0) ? 0.7 : -0.7;
+                s->look_dy = -0.5;
+
+                // Little scamper dust trail while running back fast
+                if (rand_f(0.0, 1.0) < 0.20) {
+                    add_particle(s, s->x, s->y, 0);
+                }
             }
         } else if (s->startle_timer > 0.0) {
             // Startled run
